@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<meta charset="utf-8" />
+<!-- saved from url=(0040)http://syntime.github.io/tree-trunk.html -->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
 	<title></title>
 	<style>
 		body, html {
@@ -22,8 +21,8 @@
 		var rate = 15;
 		var lineWidth = 2;
 		var cellSize = 4;
-		var mazeWidth = displayWidth / cellSize - 1;
-		var mazeHeight = displayHeight / cellSize - 1;
+		var mazeWidth = Math.floor(displayWidth / cellSize - 1);
+		var mazeHeight = Math.floor(displayHeight / cellSize - 1);
 
 		//var forkThreshold = 0.05;
 		//var rotateThreshold = 0.5;
@@ -53,20 +52,20 @@
 		var Maze = function (width, height) {
 			this.width = width;
 			this.height = height;
-			this.arr = [];
+			this.arr = new Uint8Array(new ArrayBuffer(this.width * this.height * 4));
 		};
 
 		Maze.prototype.get = function (x, y) {
 			if (x < 0 || x > this.width || y < 0 || y > this.height) return true;
 			return this.arr[x + y * this.width];
-		}
+		};
 
 		Maze.prototype.set = function (x, y) {
-			if (x < 0 || x > this.width || y < 0 || y > this.height) throw new Error('out of boundaries: (' + x + ', ' + y + ')');
+			if (x < 0 || x > this.width || y < 0 || y > this.height) return;
 			this.arr[x + y * this.width] = true;
-		}
+		};
 
-		function generateNodeType(maze) {
+		function generateNodeType(_maze) {
 
 			var Node = function (x, y, parent) {
 				this.parent = parent;
@@ -84,7 +83,7 @@
 					coords.splice(i, 1);
 				}
 				return coords;
-			}
+			};
 
 			Node.prototype.fork = function (ways) {
 				var event = Math.random();
@@ -97,7 +96,7 @@
 					this.maze.set(coord[0], coord[1]);
 				}, this);
 				return this.children;
-			}
+			};
 
 			Node.prototype.grow = function () {
 				var x, y;
@@ -121,7 +120,7 @@
 					this.maze.set(x, y);
 				}
 				return this.children;
-			}
+			};
 
 			Node.prototype.rotate = function () {
 				return this.fork(1);
@@ -151,12 +150,14 @@
 					ctx.arc(node2.x * cellSize + 1.5 * lineWidth, node2.y * cellSize + 1.5 * lineWidth, lineWidth, 0, 2 * Math.PI);
 					ctx.stroke();
 				}
-			}
+			};
 
-			Node.prototype.maze = maze;
+			Node.prototype.maze = _maze;
 
 			return Node;
 		}
+
+        var maze = new Maze(mazeWidth, mazeHeight);
 
 		var Tree = function (x, y) {
 			this.forkThreshold = Math.random() * 0.5;
@@ -164,11 +165,10 @@
 			this.rotateThreshold = Math.random() * ((1 - this.forkThreshold) * 0.1);
 			this.growThreshold = Math.random() * (1 - this.rotateThreshold);
 
-			this.maze = new Maze(mazeWidth, mazeHeight);
-			this.Node = generateNodeType(this.maze);
+			this.Node = generateNodeType(maze);
 			this.ends = [];
 			this.ends.push(new this.Node(x, y));
-		}
+		};
 
 		Tree.prototype.iterate = function iterate() {
 			if (!this.ends.length) return;
@@ -194,11 +194,11 @@
 			this.ends = newEnds;
 
 			setTimeout(this.iterate.bind(this), rate);
-		}
+		};
 
 		document.addEventListener('click', function (e) {
-			var x = e.x / cellSize;
-			var y = e.y / cellSize;
+			var x = Math.floor(e.x / cellSize);
+			var y = Math.floor(e.y / cellSize);
 			var tree = new Tree(x, y);
 			tree.iterate();
 		});
