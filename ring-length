@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<script>
+    var canvas = document.createElement('canvas');
+    var displayWidth = document.body.clientWidth;
+    var displayHeight = document.body.clientHeight;
+
+    var rate = 15;
+
+    var count = Math.ceil(Math.random() * 30 + 2);
+    var size = Math.min(displayWidth, displayHeight);
+    var center = size / 2;
+    var half = size / 2;
+    var lineWidth = 5;
+    var radius = half - lineWidth;
+    var pi2 = 2 * Math.PI;
+    var pi_2 = Math.PI / 2;
+    var angle = pi2 / count;
+    var areaAngle = angle * 0.15;
+
+    canvas.setAttribute('width', displayWidth);
+    canvas.setAttribute('height', displayHeight);
+    document.body.appendChild(canvas);
+    var ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#000';
+    ctx.lineWidth = lineWidth;
+    ctx.font = "16px Verdana";
+
+    var log = console.log.bind(console);
+
+    // ---------------------------------------------------------------------------------------------
+
+    function Ring(count) {
+        this.count = count;
+        this.pos = 0;
+        this.realPos = 0;
+        this.arr = [];
+
+        for (var i = 0; i < this.count; i++) {
+            this.arr.push(Math.floor(Math.random() * 2));
+        }
+    }
+
+    Ring.prototype.get = function () {
+        return this.arr[this.realPos];
+    };
+
+    Ring.prototype.walk = function (shift) {
+        this.pos += shift;
+        this.realPos = (this.count + this.pos % this.count) % this.count;
+        return this.get();
+    };
+
+    Ring.prototype.toggle = function () {
+        return this.arr[this.realPos] = !this.arr[this.realPos];
+    };
+
+    Ring.prototype.set = function (val) {
+        return this.arr[this.realPos] = val;
+    };
+
+    Ring.prototype.draw = function () {
+        for (var i = 0; i < this.count; i++) {
+            ctx.strokeStyle = (this.arr[i] ? '#ff0' : '#000');
+            ctx.lineWidth = (i === this.realPos ? lineWidth * 5 : lineWidth);
+            ctx.beginPath();
+            ctx.arc(center, center, radius, i * angle + areaAngle - pi_2, (i + 1) * angle - areaAngle - pi_2);
+            ctx.stroke();
+        }
+        ctx.fillText(this.pos, center - (10 * ((this.pos + '').length / 2)), center - 15);
+        ctx.fillText(this.realPos, center - (10 * ((this.realPos + '').length / 2)), center + 15);
+        ctx.fillText(this.count, 10, 20);
+    };
+
+    var ring = new Ring(count);
+
+    function draw() {
+        ctx.clearRect(0, 0, displayWidth, displayHeight);
+        ring.draw();
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+
+    function Solver(ring) {
+        this.ring = ring;
+        this.count = 1;
+        this.first = ring.get();
+        this.action = 'check next';
+        this.checked = 0;
+    }
+
+    Solver.prototype.step = function () {
+        var msg = this.action;
+        if (this.action === 'check next') {
+            if (this.ring.walk(+1) !== this.first) {
+                this.count++;
+                msg += ', count: ' + this.count;
+            } else {
+                this.action = 'check sequence';
+                this.checked = 0;
+                msg += ', current count: ' + this.count + ', now start checking sequence';
+            }
+        } else if (this.action === 'go to start') {
+            this.ring.walk(-1);
+            if (this.ring.pos == 0) {
+                this.action = 'check start'
+            }
+        } else if (this.action === 'check start') {
+            if (this.ring.get() !== this.first) {
+                log('i found! Count is ' + (this.count + 1));
+                return this.count + 1;
+            } else {
+                msg += ', it is not the one, going back';
+                this.action = 'go back';
+            }
+        } else if (this.action === 'go back') {
+            this.ring.walk(+1);
+            if (this.ring.pos == this.count) {
+                if (this.checked > 0) {
+                    this.action = 'remove sequence';
+                    this.ring.toggle();
+                } else {
+                    this.action = 'check next';
+                }
+            }
+        } else if (this.action === 'check sequence') {
+            if (this.checked === this.count) {
+                msg += 'sequence suitable, going to start of sequence';
+                this.action = 'go to start of sequence';
+            } else {
+                if (this.ring.walk(+1) !== this.start) {
+                    this.checked++;
+                    msg += ', checked ' + this.checked + ' items';
+                } else {
+                    this.checked = 0;
+                    msg += ', sequence not suitable, going to start of sequence';
+                    this.action = 'go to start of sequence';
+                }
+            }
+        } else if (this.action === 'go to start of sequence') {
+            if (this.ring.pos === this.count) {
+                msg += ', found sequence start, switched ' + this.count + ', going to start';
+                this.ring.toggle();
+                this.action = 'go to start';
+            } else {
+                this.ring.walk(-1);
+            }
+        } else if (this.action === 'remove sequence') {
+            if (this.checked > 0) {
+                msg += ', removing sequence: ' + this.ring.pos;
+                this.ring.set(!this.first);
+                this.ring.walk(+1);
+                this.count++;
+                this.checked--;
+            } else {
+                this.action = 'check next';
+            }
+        }
+        log(msg);
+        return false;
+    };
+
+    var solver = new Solver(ring);
+
+    document.addEventListener('keydown', function (e) {
+        if (e.keyCode === 37) {
+            ring.walk(-1);
+        } else if (e.keyCode === 39) {
+            ring.walk(+1);
+        } else if (e.keyCode === 38) {
+            ring.set(1);
+        } else if (e.keyCode === 40) {
+            ring.set(0);
+        } else if (e.keyCode === 32) {
+            ring.toggle();
+        } else if (e.keyCode === 13) {
+            solver.step();
+        } else {
+            log(e.keyCode);
+        }
+    });
+
+</script>
+</body>
+</html>
