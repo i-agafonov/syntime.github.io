@@ -1,0 +1,60 @@
+@font-face {
+    font-family: 'cinzelregular';
+    src: url('Cinzel-Regular.eot');
+    src: url('Cinzel-Regular.eot?#iefix') format('embedded-opentype'),
+         url('Cinzel-Regular.woff') format('woff'),
+         url('Cinzel-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'cinzelbold';
+    src: url('Cinzel-Bold.eot');
+    src: url('Cinzel-Bold.eot?#iefix') format('embedded-opentype'),
+         url('Cinzel-Bold.woff') format('woff'),
+         url('Cinzel-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'cinzelblack';
+    src: url('Cinzel-Black.eot');
+    src: url('Cinzel-Black.eot?#iefix') format('embedded-opentype'),
+         url('Cinzel-Black.woff') format('woff'),
+         url('Cinzel-Black.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'cinzel_decorativeregular';
+    src: url('CinzelDecorative-Regular.eot');
+    src: url('CinzelDecorative-Regular.eot?#iefix') format('embedded-opentype'),
+         url('CinzelDecorative-Regular.woff') format('woff'),
+         url('CinzelDecorative-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'cinzel_decorativebold';
+    src: url('CinzelDecorative-Bold.eot');
+    src: url('CinzelDecorative-Bold.eot?#iefix') format('embedded-opentype'),
+         url('CinzelDecorative-Bold.woff') format('woff'),
+         url('CinzelDecorative-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'cinzel_decorativeblack';
+    src: url('CinzelDecorative-Black.eot');
+    src: url('CinzelDecorative-Black.eot?#iefix') format('embedded-opentype'),
+         url('CinzelDecorative-Black.woff') format('woff'),
+         url('CinzelDecorative-Black.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}

@@ -1,0 +1,208 @@
+.cinzel {
+	font-family: 'cinzelblack';
+}
+
+.header-main-container {
+    position: relative;
+    font-size: 30px;
+    margin: 10px 200px 5px 0;
+}
+
+.header-main {
+    text-align: right;
+    line-height: 150px;
+    height: 150px;
+    margin: 0;
+    display: block;
+}
+
+.menu-main {
+    position: relative;
+    clear: left;
+    float: left;
+    left: 50%;
+    margin: 10px 0 5px 0;
+    padding: 0;
+    list-style: none;
+    font-size: 30px;
+}
+
+.menu-main a {
+    float: left;
+    font-size: 16px;
+    color: #333;
+    padding: 4px 8px;
+}
+
+.menu-main a > b {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: -1px;
+    width: 100%;
+    height: 0;
+    border: 1px solid #fff;
+    transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+}
+
+.menu-main a:hover {
+    text-decoration: none;
+}
+
+.menu-main a:hover > b {
+    height: 100%;
+    border: 1px #000 solid;
+}
+
+@media (min-width: 768px) {
+    .header-main-container {margin: 40px 0 20px 0; font-size: 30px;}
+    .menu-main {margin: 0 0 10px 0}
+    .menu-main a {font-size: 18px; padding: 6px 12px}
+    .menu-main a > b {top: 0; left: -1px}
+}
+
+@media (min-width: 992px) {
+    .header-main-container {margin: 80px 0 60px 0; font-size: 40px}
+    .menu-main {margin: 0 0 15px 0}
+    .menu-main a {font-size: 22px; padding: 8px 16px}
+    .menu-main a > b {top: 0; left: -2px}
+}
+
+@media (min-width: 1200px) {
+    .header-main-container {margin: 120px 0 80px 0; font-size: 50px}
+    .menu-main {margin: 0 0 15px 0}
+    .menu-main a {font-size: 26px; padding: 8px 16px}
+    .menu-main a > b {top: 0; left: -2px}
+}
+
+.menu-main-container {
+    position: relative;
+    float: left;
+    width: 100%;
+    overflow: hidden;
+}
+
+.menu-main > li {
+    position: relative;
+    display: block;
+    float: left;
+    right: 50%;
+    margin: 2px 5px;
+    padding: 0;
+}
+
+.bg {
+    position: relative;
+    float: left;
+    background: #000;
+    overflow: hidden;
+    width: 100%;
+    height: 600px;
+}
+
+.header-middle {
+    position: absolute;
+    width: 100%;
+    top: 200px;
+    margin: 0;
+    color: #fff;
+    text-shadow: 0 0 8px #000000;
+}
+
+.bg-img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+@-webkit-keyframes imgmove1 {
+    0% { opacity: 1; transform: translate(0, 3% ) scale(1); }
+    30% { opacity: 1; }
+    40% { opacity: 0; }
+    50% { opacity: 0; transform: translate(-3%, -3%) scale(1.2); }
+    70% { opacity: 0; }
+    80% { opacity: 1; }
+    100% { opacity: 1; transform: translate(0, 3% ) scale(1); }
+}
+
+@-webkit-keyframes imgmove2 {
+    0% { opacity: 0; transform: translate(3%, -3%) scale(1.2); }
+    20% { opacity: 0; }
+    30% { opacity: 1; }
+    50% { opacity: 1; transform: translate(0, 3%) scale(1); }
+    80% { opacity: 1; }
+    90% { opacity: 0; }
+    100% { opacity: 0; transform: translate(3%, -3%) scale(1.2); }
+}
+
+.bg-img1 {
+    -webkit-animation: imgmove1 20s infinite ease-in-out;
+    animation: imgmove1 20s infinite ease-in-out;
+}
+
+.bg-img2 {
+    -webkit-animation: imgmove2 20s infinite ease-in-out;
+    animation: imgmove2 20s infinite ease-in-out;
+}
+
+.coin {
+    position: absolute;
+    margin: 0;
+    width: 140px;
+    height: 140px;
+    perspective: 400px;
+    -webkit-perspective: 400px;
+    -moz-perspective: 400px;
+    -o-perspective: 400px;
+}
+
+.coin2 {
+    opacity: 0;
+}
+
+@-webkit-keyframes coinmove1 {
+    0% { transform: rotateY(0deg); opacity: 1;}
+    33% { opacity: 1; }
+    34% { opacity: 0; }
+    66% { opacity: 0; }
+    67% { opacity: 1; }
+    100% { transform: rotateY(360deg); opacity: 1;}
+}
+
+@-webkit-keyframes coinmove2 {
+    0% { transform: rotateY(0deg); opacity: 0; }
+    33% { opacity: 0; }
+    34% { opacity: 1; }
+    66% { opacity: 1; }
+    67% { opacity: 0; }
+    100% { transform: rotateY(360deg); opacity: 0; }
+}
+
+.header-main-container .coin1 {
+    -webkit-animation: coinmove1 2s infinite ease-in-out;
+    animation: coinmove 2s infinite ease-in-out;
+}
+
+.header-main-container .coin2 {
+    -webkit-animation: coinmove2 2s infinite ease-in-out;
+    animation: coinmove 2s infinite ease-in-out;
+}
+
+h2, h3 {
+    color: #28a4c9;
+}
+
+.macbook {
+    display: block;
+    width: 760px;
+    height: 460px;
+}
+
+.video {
+    position: absolute;
+    left: 104px;
+    top: 91px;
+}
