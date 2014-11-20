@@ -1,22 +1,37 @@
 var i = 0;
 var bg = document.getElementsByClassName('bg')[0];
 var headerMiddle = document.getElementsByClassName('header-middle')[0];
-var img;
+var inouts = document.getElementsByClassName('inout-container');
 
 var bgImgs = document.getElementsByClassName('bg-img');
 var imgIndexes = [0, 0];
+var inoutThreshold;
 
 function resize(evt) {
 	bg.style.height = Math.floor(0.3 * bg.clientWidth) + 'px';
 	headerMiddle.style.top = (bg.clientHeight / 3) + 'px';
+	inoutThreshold = window.innerHeight * 0;// / 6;
 	scroll();
 }
 
 function scroll(evt) {
 	var top  = window.pageYOffset || document.documentElement.scrollTop;
+	var bottom  = top + window.innerHeight;
 	var center = (bgImgs[0].clientWidth / 1920) * 640;
 	bgImgs[0].style.top = (top * 0.4 - center) + 'px';
 	bgImgs[1].style.top = (top * 0.4 - center) + 'px';
+
+	[].forEach.call(inouts, function (container) {
+		var node = container.getElementsByClassName('inout')[0];
+		var center = container.offsetTop + container.clientHeight / 2;
+		if (top + inoutThreshold <= center && center <= bottom - inoutThreshold) {
+			node.classList.add('in');
+			node.classList.remove('out');
+		} else {
+			node.classList.remove('in');
+			node.classList.add('out');
+		}
+	});
 }
 
 function getRandom(index) {

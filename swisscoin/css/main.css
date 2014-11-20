@@ -5,7 +5,68 @@
 .header-main-container {
     position: relative;
     font-size: 30px;
-    margin: 10px 200px 5px 0;
+    padding: 10px 200px 5px 0;
+}
+
+.inout-container {
+    overflow: hidden;
+    perspective: 600px;
+}
+
+.header {
+    color: #333;
+}
+
+.inout {
+    position: relative;
+}
+
+.header-main-inout {
+    transition: all 0.5s ease-in-out;
+    transform-origin: 50% 0;
+}
+
+.header-main-inout.in {
+    transform: translateY(0);
+    opacity: 1;
+}
+.header-main-inout.out {
+    transform: rotateX(-90deg);
+    opacity: 0;
+}
+
+.box1-inout {
+    transition: all 1s ease-out;
+    transform-origin: 50% 50%;
+}
+
+.box1-inout.in {
+    transform: rotate3d(-1,0.2,-0.4,0);
+    opacity: 1;
+}
+
+.box1-inout.out {
+    transform: rotate3d(-1,0.2,-0.4,90deg);
+    opacity: 0;
+}
+
+.box2-inout {
+    transition: all 1s ease-out;
+    transform-origin: 50% 50%;
+}
+
+.box2-inout.in {
+    transform: rotate3d(0.2,-0.8,0.4,0);
+    opacity: 1;
+}
+
+.box2-inout.out {
+    transform: rotate3d(0.2,-0.8,0.4,-90deg);
+    opacity: 0;
+}
+
+.shadow {
+    box-shadow: rgba(0,0,0,0.2) 3px 3px 1px;
 }
 
 .header-main {
@@ -52,30 +113,49 @@
     text-decoration: none;
 }
 
+.digit {
+    color: #8f6000;
+    font-size: 50px;
+    font-family: digital-7_italicitalic;
+    text-align: center;
+    text-shadow: 5px 5px 0 rgba(0,0,0,0.25);
+}
+
+.digit-canvas {
+    position: absolute;
+}
+
+.heighter {
+    height: 200px;
+}
+
 .menu-main a:hover > b {
     height: 100%;
     border: 1px #000 solid;
 }
 
 @media (min-width: 768px) {
-    .header-main-container {margin: 40px 0 20px 0; font-size: 30px;}
+    .header-main-container {padding: 40px 0 20px 0; font-size: 30px;}
     .menu-main {margin: 0 0 10px 0}
     .menu-main a {font-size: 18px; padding: 6px 12px}
     .menu-main a > b {top: 0; left: -1px}
+    .digit {font-size: 120px;}
 }
 
 @media (min-width: 992px) {
-    .header-main-container {margin: 80px 0 60px 0; font-size: 40px}
+    .header-main-container {padding: 80px 0 60px 0; font-size: 40px}
     .menu-main {margin: 0 0 15px 0}
     .menu-main a {font-size: 22px; padding: 8px 16px}
     .menu-main a > b {top: 0; left: -2px}
+    .digit {font-size: 180px;}
 }
 
 @media (min-width: 1200px) {
-    .header-main-container {margin: 120px 0 80px 0; font-size: 50px}
+    .header-main-container {padding: 120px 0 80px 0; font-size: 50px}
     .menu-main {margin: 0 0 15px 0}
     .menu-main a {font-size: 26px; padding: 8px 16px}
     .menu-main a > b {top: 0; left: -2px}
+    .digit {font-size: 240px;}
 }
 
 .menu-main-container {
@@ -181,6 +261,14 @@
     100% { transform: rotateY(360deg); opacity: 0; }
 }
 
+.upstart {
+    transition: all ease-in-out 0.5s;
+}
+
+.upstart.show {
+
+}
+
 .header-main-container .coin1 {
     -webkit-animation: coinmove1 2s infinite ease-in-out;
     animation: coinmove 2s infinite ease-in-out;
@@ -193,6 +281,10 @@
 
 h2, h3 {
     color: #28a4c9;
+}
+
+.header {
+    color: #333;
 }
 
 .macbook {
