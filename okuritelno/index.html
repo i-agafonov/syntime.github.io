@@ -16,6 +16,7 @@
 </head>
 <body>
 <script>
+    "use strict";
     var canvas = document.createElement('canvas');
     var displayWidth = document.body.clientWidth;
     var displayHeight = document.body.clientHeight;
@@ -50,49 +51,65 @@
         particles.forEach(function (particle) {
             particle.setImage(imageObj);
         });
+        requestAnimationFrame(draw);
     };
 
-    imageObj.src = "/img/smoke.png";
+    imageObj.src = "img/smoke.png";
 
-    function Particle(x, y, dx, dy, r) {
-
+    function Particle(x, y, dx, dy, r, angle, dangle) {
         this.x = x || 0;
         this.y = y || 0;
 
         this.dx = dx || 0;
         this.dy = dy || 0;
 
-        this.r = r || 1;
+        this.size = r * 256;
+        this.size_2 = this.size * 0.5;
 
-        this.draw = function () {
-            ctx.drawImage(this.image, this.x - 128, this.y - 128);
-        };
+        this.angle = angle || 0;
+        this.dangle = dangle || 0;
 
-        this.update = function () {
-            this.x += this.dx;
-            this.y += this.dy;
-
-            if (this.x >= displayWidth) {
-                this.xVelocity = -this.xVelocity;
-                this.x = displayWidth;
-            } else if (this.x <= 0) {
-                this.xVelocity = -this.xVelocity;
-                this.x = 0;
-            }
-
-            if (this.y >= displayHeight) {
-                this.yVelocity = -this.yVelocity;
-                this.y = displayHeight;
-            } else if (this.y <= 0) {
-                this.yVelocity = -this.yVelocity;
-                this.y = 0;
-            }
-        };
-
-        this.setImage = function (image) {
-            this.image = image;
-        }
+        this.alpha = 1;
     }
+
+    Particle.prototype.draw = function () {
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+        ctx.drawImage(this.image, -this.size_2, -this.size_2, this.size, this.size);
+        ctx.setTransform(1,0,0,1,0,0);
+    };
+
+    Particle.prototype.update = function (dt) {
+        this.x += this.dx;
+        this.y += this.dy;
+
+        if (this.x >= displayWidth) {
+            this.dx = -this.dx;
+            this.x = displayWidth;
+        } else if (this.x <= 0) {
+            this.dx = -this.dx;
+            this.x = 0;
+        }
+
+        if (this.y >= displayHeight) {
+            this.dy = -this.dy;
+            this.y = displayHeight;
+        } else if (this.y <= 0) {
+            this.dy = -this.dy;
+            this.y = 0;
+        }
+
+        this.size *= 1 + 0.0001 * dt;
+        this.size_2 = this.size * 0.5;
+
+        this.angle += this.dangle;
+
+        this.alpha = this.size * ;
+    };
+
+    Particle.prototype.setImage = function (image) {
+        this.image = image;
+    };
 
     // A function to generate a random number between 2 values
     function generateRandom(min, max) {
@@ -106,23 +123,32 @@
         var dx = generateRandom(-maxVelocity, maxVelocity);
         var dy = generateRandom(-maxVelocity, maxVelocity);
 
-        var particle = new Particle(x, y, dx, dy, 1);
+        var r = generateRandom(0.02, 0.2);
+
+        var angle = generateRandom(0, pi2);
+        var dangle = generateRandom(-0.02, 0.02);
+
+        var particle = new Particle(x, y, dx, dy, r, angle, dangle);
 
         particles.push(particle);
     }
 
-    function draw() {
+    var cnt = 0;
+
+    var oldTime = 0;
+    function draw(time) {
+        var dt = time - oldTime;
         ctx.clearRect(0, 0, displayWidth, displayHeight);
 
         particles.forEach(function (particle) {
             particle.draw();
-            particle.update();
+            particle.update(dt);
         });
+
+        oldTime = time;
 
         requestAnimationFrame(draw);
     }
-
-    draw();
 
 </script>
 </body>
