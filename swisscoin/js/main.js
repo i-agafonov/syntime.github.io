@@ -30,7 +30,7 @@ function scroll(evt) {
                 node.classList.add('in');
                 node.classList.remove('out');
             }, 250);
-		} else {
+		} else if (!node.getAttribute('data-once')) {
 			node.classList.remove('in');
 			node.classList.add('out');
 		}
