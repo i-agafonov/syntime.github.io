@@ -7,6 +7,7 @@ var bgImgs = document.getElementsByClassName('bg-img');
 var imgIndexes = [0, 0];
 
 var mainMenu = document.getElementsByClassName('menu-main-container')[0];
+var mainMenuFixed = document.getElementsByClassName('menu-main-fixed-container')[0];
 
 function resize(evt) {
 	bg.style.height = Math.floor(0.3 * bg.clientWidth) + 'px';
@@ -38,13 +39,11 @@ function scroll(evt) {
     mainMenu.classList.add('in');
     mainMenu.classList.remove('out');
 
-    if (mainMenu.offsetTop + mainMenu.clientHeight <= top) {
-        mainMenu.style.top = (top - mainMenu.offsetTop + mainMenu.clientHeight) + 'px';
-        mainMenu.classList.add('fixed');
+    if (mainMenu.offsetTop <= top) {
+        mainMenuFixed.style.display = 'block';
     } else {
-        mainMenu.classList.remove('fixed');
+        mainMenuFixed.style.display = 'none';
     }
-
 }
 
 function getRandom(index) {

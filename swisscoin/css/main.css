@@ -1,31 +1,44 @@
-body { font-size: 50% }
+body {
+    font-size: 50%;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.42857143;
+}
+
+.text { font-size: 100%; }
 
 @media only screen and (min-width: 768px) {
     body { font-size: 65% }
+    .text { font-size: 200%; }
 }
 
 @media only screen and (min-width: 992px) {
     body { font-size: 70% }
+    .text { font-size: 100%; }
 }
 
 @media only screen and (min-width: 1200px) {
     body { font-size: 85% }
+    .text { font-size: 100%; }
 }
 
 @media only screen and (min-width: 1400px) {
     body { font-size: 100% }
+    .text { font-size: 100%; }
 }
 
 @media only screen and (min-width: 1600px) {
     body { font-size: 115% }
+    .text { font-size: 100%; }
 }
 
 @media only screen and (min-width: 1900px) {
     body { font-size: 135% }
+    .text { font-size: 100%; }
 }
 
 @media only screen and (min-width: 2600px) {
     body { font-size: 185% }
+    .text { font-size: 100%; }
 }
 
 .clear {
@@ -137,6 +150,14 @@ body { font-size: 50% }
     position: relative;
 }
 
+.menu-main-fixed-container {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #fff;
+    z-index: 100;
+}
+
 .menu-main-inout {
     transition: transform 0.55s ease;
     transform-origin: 50% 0%;
@@ -151,7 +172,7 @@ body { font-size: 50% }
     opacity: 0;
 }
 
-.menu-main a {
+.menu-main li > a {
     float: left;
     color: #333;
     padding: 4px 8px;
@@ -176,6 +197,7 @@ body { font-size: 50% }
     text-decoration: none;
 }
 
+.menu-main li.active > a > b,
 .menu-main a:hover > b {
     height: 100%;
     border: 1px #000 solid;
@@ -192,7 +214,6 @@ body { font-size: 50% }
 
 .bg {
     position: relative;
-    float: left;
     background: #000;
     overflow: hidden;
     width: 100%;
@@ -249,7 +270,7 @@ body { font-size: 50% }
 }
 
 .box1-inout {
-    transition: all 1s ease-out;
+    transition: transform 0.75s ease-out, opacity 0.55s ease;
     transform-origin: 50% 50%;
 }
 
@@ -259,12 +280,12 @@ body { font-size: 50% }
 }
 
 .box1-inout.out {
-    transform: rotate3d(-1,0.2,-0.4,90deg);
+    transform: rotate3d(-1,0.2,-0.4,35deg);
     opacity: 0;
 }
 
 .box2-inout {
-    transition: all 1s ease-out;
+    transition: transform 0.75s ease-out, opacity 0.5s ease;
     transform-origin: 50% 50%;
 }
 
@@ -274,7 +295,7 @@ body { font-size: 50% }
 }
 
 .box2-inout.out {
-    transform: rotate3d(0.2,-0.8,0.4,-90deg);
+    transform: rotate3d(0.2,-0.8,0.4,35deg);
     opacity: 0;
 }
 
