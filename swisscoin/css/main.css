@@ -1,3 +1,7 @@
+html {
+    font-family: Conv_OSR45,"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
 body {
     min-width: 568px;
     font-size: 80%;
@@ -18,6 +22,7 @@ body {
 }
 
 a {
+    font-family: Conv_OSR46;
     color: #FFB800;
     text-shadow: 1px 1px 1px rgba(0,0,0,1);
     text-decoration: none;
@@ -28,12 +33,16 @@ a:hover, a:focus {
     text-decoration: underline;
 }
 
-.text-container { padding: 10px 10% }
+.text-container {
+    font-size: 1.25em;
+    padding: 10px 10%;
+}
 .text-container .header:first-child { margin-top: 10px }
 
 
 .colon {
-    float: left
+    float: left;
+    min-height: 1px;
 }
 
 .colons {
@@ -49,6 +58,12 @@ a:hover, a:focus {
 
 .four.colons .colon {
     width: 25%;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.eight.colons .colon {
+    width: 12.5%;
     padding-left: 15px;
     padding-right: 15px;
 }
@@ -121,7 +136,7 @@ a:hover, a:focus {
 
 .header {
     color: #302722;
-    font-family: 'cinzelregular';
+    font-family: 'Conv_metabolc_0';
 }
 
 .inout-container {
@@ -458,6 +473,20 @@ a:hover, a:focus {
     font-size: 1.15em;
 }
 
+.rounded-icon-left {
+    margin: 15px 30px 15px 0;
+    float: left;
+    width: 10em;
+    height: 10em;
+}
+
+.rounded-icon-right {
+    margin: 15px 0 15px 30px;
+    float: right;
+    width: 10em;
+    height: 10em;
+}
+
 .social-icon {
     width: 100%;
     height: 100%;
@@ -469,8 +498,10 @@ a:hover, a:focus {
 
 .qr {
     margin: 40px auto;
-    width: 350px;
-    height: 350px;
+    width: 100%;
+    height: 100%;
+    max-width: 325px;
+    max-height: 325px;
 }
 
 .text-center {
