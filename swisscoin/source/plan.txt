@@ -18,5 +18,11 @@
 5. Возвращается на сайт. Пишет своё мыло, TXID. Нажимает SEND и вылетает окошко с надписью: You have successfully submitted your request to
 1AwfZ7xJL6w7rm33RDLZQxn6HoYhztAQgW
 
+2218212
+iphone5s
+
 luca.meier1975@gmail.com
 89227235113al
+
+ftp.switzcoin.nichost.ru
+switzcoin_ftp
