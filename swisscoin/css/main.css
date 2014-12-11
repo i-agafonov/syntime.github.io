@@ -349,12 +349,10 @@ a:hover, a:focus {
 }
 
 .bg-img1 {
-    -webkit-animation: imgmove1 20s infinite ease-in-out;
     animation: imgmove1 20s infinite ease-in-out;
 }
 
 .bg-img2 {
-    -webkit-animation: imgmove2 20s infinite ease-in-out;
     animation: imgmove2 20s infinite ease-in-out;
 }
 
