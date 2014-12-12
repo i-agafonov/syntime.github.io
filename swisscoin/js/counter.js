@@ -4,7 +4,7 @@ var counter = {};
     var divs = [];
     var lw;
 
-    var dateStart = new Date("12/15/2014");
+    var dateStart = new Date("01/13/2015");
 
     var pi = Math.PI;
     var pi2 = 2 * pi;
@@ -18,8 +18,9 @@ var counter = {};
     function update() {
         resize();
         var dateNow = new Date();
-        var countDate = new Date(dateStart - dateNow);
-        d = countDate.getDate();
+        var diff = dateStart - dateNow;
+        var countDate = new Date(diff);
+        d = Math.floor(diff / (3600000 * 24));
         h = countDate.getHours();
         m = countDate.getMinutes();
         s = countDate.getSeconds();
