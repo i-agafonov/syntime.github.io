@@ -207,23 +207,33 @@
                 <a href="http://blockchain.info" class="button green block">BUY SWISSCOIN</a>
             </form>
             <h1 class="text-center">1AwfZ7xJL6w7rm33RDLZQxn6HoYhztAQgW</h1>
-            <form role="form" class="form">
+            <?
+                if (isset ($_POST['name']) && isset ($_POST['email']) && isset ($_POST['txid'])) {
+                    mail ($_POST['email'],
+                          "The SwissCoin",
+                          "Thank you for support.\n\nWe are very pleased that you are interested in our project. The number of coins you purchased is recorded in our users registry. We hasten to remind you that the IPO will be held on 13th of January, 2015.\nFollow our website."
+                    );
+                    echo ('<p style="color: green">Thank you for support!</p>');
+                    $_POST['name'] = $_POST['email'] = $_POST['txid'] = '';
+                }
+            ?>
+            <form role="form" class="form" method="POST" id="feedback-form">
                 <img class="qr block" src="img/qr.gif">
                 <img class="price block" src="img/price.png">
                 <div class="form-line">
                     <label for="name" class="form-label">NAME</label>
-                    <input type="text" class="form-control" id="name">
+                    <input type="text" class="form-control" name="name" id="name" x-autocompletetype="name">
                 </div>
                 <div class="form-line">
                     <label for="email" class="form-label">EMAIL ADDRESS</label>
-                    <input type="email" class="form-control" id="email">
+                    <input type="email" class="form-control" name="email" id="email" x-autocompletetype="email">
                 </div>
                 <div class="form-line">
                     <label for="transactionId" class="form-label">TRANSACTION ID (TXID)</label>
-                    <input type="text" class="form-control" id="transactionId">
+                    <input type="text" class="form-control" name="txid" id="transactionId">
                 </div>
                 <div class="form-line">
-                    <button type="button" class="button green">SEND</button>
+                    <input type="submit" class="button green" value="SEND">
                 </div>
             </form>
         </div>
