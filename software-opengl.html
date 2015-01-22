@@ -36,10 +36,10 @@
 
     var log = console.log.bind(console);
 
-    function draw() {
+    function draw(t) {
         ctx.clearRect(0, 0, displayWidth, displayHeight);
 
-
+        console.log(t);
 
         requestAnimationFrame(draw);
     }
