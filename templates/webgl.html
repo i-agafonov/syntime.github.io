@@ -15,6 +15,8 @@
 </head>
 <body>
 <script>
+    var log = console.log.bind(console);
+
     var canvas = document.createElement('canvas');
     var displayWidth = document.body.clientWidth;
     var displayHeight = document.body.clientHeight;
@@ -24,34 +26,18 @@
 
     canvas.setAttribute('width', displayWidth);
     canvas.setAttribute('height', displayHeight);
+
     document.body.appendChild(canvas);
-    var ctx = canvas.getContext('2d');
 
-    var log = console.log.bind(console);
+    var gl = canvas.getContext('webgl');
 
-    function Color(r, g, b, a) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
-    }
-
-    var clear = function () {
-        ctx.fillStyle = '#000';
-        ctx.clearRect(0, 0, displayWidth, displayHeight);
-    };
-    clear();
-
-    var set = function (x, y, c) {
-        ctx.fillStyle = "rgba(" + c.r * 255 + "," + c.g * 255 + "," + c.b * 255 + "," + c.a + ")";
-        ctx.fillRect (x, y, 1, 1);
-    };
-
-    var red = new Color(1,0,0,1);
-
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LEQUAL);
+    gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    
     function draw(t) {
-        clear();
-        set(Math.floor(Math.random()*displayWidth), Math.floor(Math.random()*displayHeight), red);
+        log(t);
 
         requestAnimationFrame(draw);
     }
