@@ -19,9 +19,6 @@
     var displayWidth = document.body.clientWidth;
     var displayHeight = document.body.clientHeight;
 
-    var size = Math.min(displayWidth, displayHeight);
-    var center = size / 2;
-    var half = size / 2;
     var pi2 = 2 * Math.PI;
     var pi_2 = Math.PI / 2;
 
@@ -30,16 +27,31 @@
     document.body.appendChild(canvas);
     var ctx = canvas.getContext('2d');
 
-    ctx.fillStyle = '#000';
-    ctx.lineWidth = 2;
-    ctx.font = "16px Verdana";
-
     var log = console.log.bind(console);
 
-    function draw(t) {
-        ctx.clearRect(0, 0, displayWidth, displayHeight);
+    function Color(r, g, b, a) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+    }
 
-        console.log(t);
+    var clear = function () {
+        ctx.fillStyle = '#000';
+        ctx.clearRect(0, 0, displayWidth, displayHeight);
+    };
+    clear();
+
+    var set = function (x, y, c) {
+        ctx.fillStyle = "rgba(" + c.r * 255 + "," + c.g * 255 + "," + c.b * 255 + "," + c.a + ")";
+        ctx.fillRect (x, y, 1, 1);
+    };
+
+    var red = new Color(1,0,0,1);
+
+    function draw(t) {
+        clear();
+        set(Math.floor(Math.random()*displayWidth), Math.floor(Math.random()*displayHeight), red);
 
         requestAnimationFrame(draw);
     }

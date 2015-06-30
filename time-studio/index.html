@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<script>
+    var canvas = document.createElement('canvas');
+    var displayWidth = document.body.clientWidth;
+    var displayHeight = document.body.clientHeight;
+
+    var pi2 = 2 * Math.PI;
+    var pi_2 = Math.PI / 2;
+
+    canvas.setAttribute('width', displayWidth);
+    canvas.setAttribute('height', displayHeight);
+    document.body.appendChild(canvas);
+    var ctx = canvas.getContext('2d');
+
+    var log = console.log.bind(console);
+
+    function Color(r, g, b, a) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+    }
+
+    var clear = function () {
+        ctx.fillStyle = '#000';
+        ctx.clearRect(0, 0, displayWidth, displayHeight);
+    };
+    clear();
+
+    var set = function (x, y, c) {
+        ctx.fillStyle = "rgba(" + c.r * 255 + "," + c.g * 255 + "," + c.b * 255 + "," + c.a + ")";
+        ctx.fillRect (x, y, 1, 1);
+    };
+
+    var red = new Color(1,0,0,1);
+
+    function draw(t) {
+        clear();
+        set(Math.floor(Math.random()*displayWidth), Math.floor(Math.random()*displayHeight), red);
+
+        requestAnimationFrame(draw);
+    }
+
+    requestAnimationFrame(draw);
+
+</script>
+</body>
+</html>
