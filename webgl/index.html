@@ -24,20 +24,29 @@
 
     var dWidth, dHeight;
     var resize = function () {
-        dWidth = document.body.clientWidth;
-        dHeight = document.body.clientHeight;
-        canvas.setAttribute('width', dWidth);
-        canvas.setAttribute('height', dHeight);
-        gl.viewport(0, 0, dWidth, dHeight);
+        dWidth = parseFloat(document.body.clientWidth);
+        dHeight = parseFloat(document.body.clientHeight);
+        canvas.width = dWidth;
+        canvas.height = dHeight;
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     };
 
     resize();
 
     window.addEventListener('resize', resize);
 
-    var program;
+    var fromScreen = function (vertices, vSize) {
+        var i = 0, len = vertices.length;
+        do {
+            vertices[i] = (vertices[i] / dWidth) * 2.0 - 1.0;
+            vertices[i+1] = 1.0 - (vertices[i+1] / dHeight) * 2.0;
+            i += vSize;
+        } while (i < len)
+    };
+
     var squareVerticesBuffer;
     var vertexPositionAttribute;
+    var rotationMatrixUniform;
 
     var init = function () {
         gl.clearColor(0.0, 0.06, 0.1, 1.0);
@@ -46,11 +55,10 @@
     };
 
     var initShaders = function () {
-        return glu.loadProgram('shaders/vshader.glsl', 'shaders/fshader.glsl').then(function (pr) {
-            program = pr;
+        return glu.loadProgram('shaders/vshader.glsl', 'shaders/fshader.glsl').then(function (program) {
             gl.useProgram(program);
 
-            gl.uniform2f(gl.getUniformLocation(program, "uViewport"), dWidth, dHeight);
+            rotationMatrixUniform = gl.getUniformLocation(program, "uRotationMatrix");
 
             vertexPositionAttribute = gl.getAttribLocation(program, "aVertexPosition");
             gl.enableVertexAttribArray(vertexPositionAttribute);
@@ -62,10 +70,13 @@
         gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
 
         var vertices = [
-            0, 200,
-            200, 500,
-            10, 50
+            0.0, 0.0,
+            0.0, 200.0,
+            200.0, 0.0,
+            200.0, 200.0
         ];
+
+        fromScreen(vertices, 2);
 
         squareVerticesBuffer.length = vertices.length;
 
@@ -78,13 +89,27 @@
         requestAnimationFrame(draw);
     }, err);
 
-    var draw = function () {
+    var rotMat = mat2.create();
+
+    var ot, dt;
+    var draw = function (nt) {
+        if (!ot) {
+            ot = nt;
+            requestAnimationFrame(draw);
+            return;
+        }
+        dt = ot - nt;
+
         requestAnimationFrame(draw);
+
+        mat2.rotate(rotMat, rotMat, 0.001 * dt);
+        gl.uniformMatrix2fv(rotationMatrixUniform, false, rotMat);
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
         gl.vertexAttribPointer(vertexPositionAttribute, 2, gl.FLOAT, false, 0, 0);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVerticesBuffer.length / 2);
+        ot = nt;
     };
 
 </script>
