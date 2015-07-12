@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title></title>
+    <style>body, html {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+    }</style>
+</head>
+<body>
+<script src="js/gl-matrix-min.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/webgl-utils.js"></script>
+<script>
+    'use strict';
+
+    window.canvas = document.createElement('canvas');
+    document.body.appendChild(canvas);
+    window.gl = canvas.getContext('webgl', {antialias: false, depth: true});
+
+    var dWidth, dHeight;
+
+    var resizeCanvas = function () {
+        dWidth = parseFloat(document.body.clientWidth);
+        dHeight = parseFloat(document.body.clientHeight);
+        canvas.width = dWidth;
+        canvas.height = dHeight;
+    };
+
+    resizeCanvas();
+
+    var cube;
+    var rotationMatrixUniform;
+
+    var pr;
+    var initShaders = function () {
+        return glu.loadProgram('shaders/vshader.glsl', 'shaders/fshader.glsl').then(function (program) {
+            pr = program;
+            gl.useProgram(pr);
+
+            pr.aVertexPos = gl.getAttribLocation(pr, "aVertexPos");
+            pr.aVertexNormal = gl.getAttribLocation(pr, "aVertexNormal");
+            pr.uPMat = gl.getUniformLocation(pr, "uPMat");
+            pr.uColor = gl.getUniformLocation(pr, "uColor");
+            pr.uLight = gl.getUniformLocation(pr, "uLight");
+            pr.uPos = gl.getUniformLocation(pr, "uPos");
+        });
+    };
+
+    var Cube = function (size) {
+
+        // cube ///////////////////////////////////////////////////////////////////////
+        //    v6------v5
+        //   /|      /|
+        //  v1------v0|
+        //  | |     | |
+        //  | |v7---|-|v4
+        //  |/      |/
+        //  v2------v3
+
+        var i;
+        this.vertices = [
+            1, 1, 1,  -1, 1, 1,  -1,-1, 1,   1,-1, 1,  // v0, v1, v2, v3
+            1,-1,-1,   1, 1,-1,  -1, 1,-1,  -1,-1,-1,  // v4, v5, v6, v7
+        ];
+
+        this.indices = [
+            0, 1, 2,   2, 0, 3,  // front
+            0, 3, 4,   4, 0, 5,  // right
+            0, 5, 6,   6, 0, 1,  // top
+            1, 6, 7,   7, 1, 2,  // left
+            4, 3, 2,   2, 4, 7,  // bottom
+            7, 6, 5,   5, 7, 4,  // back
+        ];
+
+        var len = this.vertices.length;
+        this.normals = new Array(len);
+        for (i = 0; i < len; i++) {
+            this.normals[i] = this.normalCoeff * this.vertices[i];
+            this.vertices[i] *= size;
+        }
+    };
+
+    Cube.prototype.normalCoeff = 1 / Math.sqrt(3);
+
+    var initBuffers = function () {
+
+        cube = new Cube(1/64);
+
+        cube.vertexPosBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, cube.vertexPosBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube.vertices), gl.STATIC_DRAW);
+
+        cube.vertexNormalBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, cube.vertexNormalBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube.normals), gl.STATIC_DRAW);
+
+        cube.indexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cube.indexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint8Array(cube.indices), gl.STATIC_DRAW);
+    };
+
+    var init = function () {
+        gl.clearColor(0.0, 0.06, 0.1, 1.0);
+        gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc(gl.LEQUAL);
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cube.indexBuffer);
+
+        gl.enableVertexAttribArray(pr.aVertexPos);
+        gl.bindBuffer(gl.ARRAY_BUFFER, cube.vertexPosBuffer);
+        gl.vertexAttribPointer(pr.aVertexPos, 3, gl.FLOAT, false, 0, 0);
+
+        gl.enableVertexAttribArray(pr.aVertexNormal);
+        gl.bindBuffer(gl.ARRAY_BUFFER, cube.vertexNormalBuffer);
+        gl.vertexAttribPointer(pr.aVertexNormal, 3, gl.FLOAT, false, 0, 0);
+    };
+
+    var resizeView = function () {
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+
+        var b = 2048 / dHeight;
+        var a = dHeight / dWidth;
+        gl.uniformMatrix3fv(pr.uPMat, false, new Float32Array([
+            +a * b, +0.5 * b, +1.0,
+            +a * b, -0.5 * b, -1.0,
+            +0.0, +1.0 * b, +0.0,
+        ]));
+    };
+
+    var resize = function () {
+        resizeCanvas();
+        resizeView();
+    };
+
+    initBuffers();
+    initShaders().then(function () {
+        init();
+        resizeView();
+        window.addEventListener('resize', resize);
+        requestAnimationFrame(draw);
+    }, err);
+
+    var coef = 1 / Math.sqrt(2);
+    var _16 = 1/32;
+    var ot, dt;
+    var frame = 1;
+    var frameRate = 0;
+    var num = 3600;
+    var sqr = Math.floor(Math.sqrt(num));
+    var draw = function (nt) {
+        if (!ot) {
+            ot = nt;
+            requestAnimationFrame(draw);
+            return;
+        }
+        dt = nt - ot;
+        frame++;
+        frame = frame%61;
+
+        requestAnimationFrame(draw);
+
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        for (var i = 0; i < num; i++) {
+            gl.uniform4f(pr.uColor, ((i % sqr) / sqr), i / num, 0.0, 1.0);
+            gl.uniform3f(pr.uPos, (i % sqr - sqr/2) * _16, Math.floor(i/sqr - sqr/2) * _16, 0.0);
+            gl.uniform3f(pr.uLight, Math.sin(nt * 0.001) * coef, Math.cos(nt * 0.001) * coef, coef);
+            gl.drawElements(gl.TRIANGLES, cube.indices.length, gl.UNSIGNED_BYTE, 0);
+        }
+        if (frame) {
+            frameRate += 1000/dt;
+        } else {
+            log(frameRate / 60);
+            frameRate = 0;
+        }
+        ot = nt;
+    };
+
+</script>
+</body>
+</html>
