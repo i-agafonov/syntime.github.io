@@ -140,8 +140,8 @@
         init();
         resizeView();
         window.addEventListener('resize', resize);
-        window.addEventListener('keydown', onkey);
-        window.addEventListener('keyup', onkey);
+        window.addEventListener('keydown', onKeyEvent);
+        window.addEventListener('keyup', onKeyEvent);
         requestAnimationFrame(draw);
     }, err);
 
@@ -149,6 +149,9 @@
         gl.clearColor(0.0, 0.06, 0.1, 1.0);
         gl.enable(gl.DEPTH_TEST);
         gl.depthFunc(gl.LEQUAL);
+
+        gl.enable(gl.CULL_FACE);
+        gl.cullFace(gl.FRONT);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cube.indexBuffer);
 
@@ -163,8 +166,17 @@
         gl.uniform3f(pr.uLight, Math.sin(angle) * coef, Math.cos(angle) * coef, coef);
     };
 
-    var onkey = function (e) {
-        log(e.keyCode, utils.keyLabels[e.keyCode]);
+    window.keys = {};
+    window.keyListeners = {};
+    var onKeyEvent = function (e) {
+        var keydown = e.type === 'keydown', fn;
+        keys[e.keyCode] = keydown;
+        if (keydown && (fn = keyListeners[e.keyCode])) {
+            fn();
+        }
+    };
+    var onKeyDown = function(keyLabel, callback) {
+        keyListeners[utils.keysCodes[keyLabel]] = callback;
     };
 
     var coef = 1 / Math.sqrt(2);
@@ -173,8 +185,6 @@
     var frame = 1;
     var zeta = 14;
     var teta = 8;
-    var num = 10;
-    var sqr = Math.floor(Math.sqrt(num));
     var frate = 0;
 
     var numColors = 7;
@@ -182,6 +192,11 @@
     for (var i = 0; i < numColors * 3; i++) {
         colors[i] = Math.random();
     }
+
+    var sqr = 10;
+    var num = sqr * sqr;
+    onKeyDown('LEFT_BRACKET', function () { sqr--; num = sqr * sqr; });
+    onKeyDown('RIGHT_BRACKET', function () { sqr++; num = sqr * sqr; });
 
     var draw = function (nt) {
         if (!ot) {
@@ -204,7 +219,7 @@
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         for (var i = 0; i < num; i++) {
             gl.uniform3fv(pr.uColor, colors.subarray(i % numColors, i % numColors + 3));
-            gl.uniform3f(pr.uPos, (i % sqr - sqr / 2) * _16, Math.floor(i / sqr - sqr / 2) * _16, Math.floor(-i / 200) * _16);
+            gl.uniform3f(pr.uPos, (i % sqr - Math.floor(sqr / 2)) * _16, Math.floor(i / sqr - Math.floor(sqr / 2)) * _16, Math.floor(-i / 200) * _16);
             gl.drawElements(gl.TRIANGLES, cube.indices.length, gl.UNSIGNED_BYTE, 0);
         }
         ot = nt;
