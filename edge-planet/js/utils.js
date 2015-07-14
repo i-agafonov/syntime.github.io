@@ -29,6 +29,26 @@ utils.loadFile = function (fileName, noCache) {
 
 };
 
+utils.watch = function (object, key, callback) {
+    var _key = ('_').concat(key);
+    Object.defineProperty(object, _key, {
+        writable: true,
+        configurable: true,
+    });
+    Object.defineProperty(object, key, {
+        set: function (v) {
+            var old = object[_key];
+            object[_key] = v;
+            callback(v, old);
+        },
+        get: function () {
+            return object[_key];
+        },
+        enumerable: true,
+        configurable: true,
+    });
+};
+
 utils.keysCodes = {
     SPACE: 32,
     APOSTROPHE: 222,
