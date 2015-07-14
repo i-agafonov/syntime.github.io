@@ -26,6 +26,9 @@ glu.createProgram = function (vSource, fSource) {
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
         throw ('Shader linkage error: ' + gl.getProgramInfoLog(program));
     }
+
+    glu.getProgramLocations(program);
+
     return program;
 };
 
@@ -42,5 +45,27 @@ glu.loadProgram = function (vFileName, fFileName) {
         program.fSource = fStr;
         return program;
     }, err);
+
+};
+
+glu.getProgramLocations = function (program) {
+
+    program.activeUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+    program.activeAttributes = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
+
+    var i;
+    for (i = 0; i < program.activeUniforms; i++) {
+        var uniform = gl.getActiveUniform(program, i);
+        uniform.index = i;
+        uniform.loc = gl.getUniformLocation(program, uniform.name);
+        program[uniform.name] = uniform;
+    }
+
+    for (i = 0; i < program.activeAttributes; i++) {
+        var attribute = gl.getActiveAttrib(program, i);
+        attribute.index = i;
+        attribute.loc = gl.getAttribLocation(program, attribute.name);
+        program[attribute.name] = attribute;
+    }
 
 };

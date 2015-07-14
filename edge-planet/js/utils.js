@@ -34,12 +34,15 @@ utils.watch = function (object, key, callback) {
     Object.defineProperty(object, _key, {
         writable: true,
         configurable: true,
+        value: object[key]
     });
     Object.defineProperty(object, key, {
         set: function (v) {
             var old = object[_key];
-            object[_key] = v;
-            callback(v, old);
+            if (v !== old) {
+                object[_key] = v;
+                callback(v, old);
+            }
         },
         get: function () {
             return object[_key];
@@ -251,3 +254,25 @@ utils.keyLabels = {
     18: 'ALT',
     91: 'SUPER'
 };
+
+utils.keyPressed = {};
+utils.keyListeners = {};
+
+utils.onKeyDown = function (keyLabel, callback) {
+    var key = utils.keysCodes[keyLabel];
+    utils.keyListeners[key] = utils.keyListeners[key] || [];
+    utils.keyListeners[key].push(callback);
+};
+
+var onKeyEvent = function (e) {
+    var keydown = e.type === 'keydown', fns;
+    utils.keyPressed[e.keyCode] = keydown;
+    if (keydown && (fns = utils.keyListeners[e.keyCode])) {
+        for (var i = 0; i < fns.length; i++) {
+            fns[i]();
+        }
+    }
+};
+
+addEventListener('keydown', onKeyEvent);
+addEventListener('keyup', onKeyEvent);
