@@ -10,14 +10,17 @@
     var resizeCanvas = function () {
         dWidth = parseFloat(document.body.clientWidth);
         dHeight = parseFloat(document.body.clientHeight);
+        dWidth += dWidth & 1;
+        dHeight += dHeight & 1;
         canvas.width = dWidth;
         canvas.height = dHeight;
+        log('canvas size changed: %d x %d', dWidth, dHeight);
     };
 
     resizeCanvas();
 
     var frameRate = document.createElement('div');
-    frameRate.setAttribute('style', 'position: fixed; bottom: 50px; left: 20px; color: #fff');
+    frameRate.setAttribute('style', 'position: fixed; bottom: 20px; left: 20px; color: #fff');
     document.body.appendChild(frameRate);
 
     var cube;
@@ -51,22 +54,23 @@
     };
 
     var updateProjectionMatrix = function () {
-        var b = (pxScreenSize * 2) / (dHeight * px);
-        var a = dHeight / dWidth;
+        var dh = 1 / dHeight;
+        var dw = 1 / dWidth;
+        var b = (pxScreenSize * 2 * dh) / px;
+        var a = dHeight * dw;
         gl.uniformMatrix3fv(pr['uPMat'].loc, false, new Float32Array([
-            +a * b, +0.5 * b, +b,
-            +a * b, -0.5 * b, -b,
-            +0.000, +1.0 * b, +0.0,
+            +a * b, +0.5 * b, +0.01,
+            +a * b, -0.5 * b, -0.01,
+            +0.000, +1.0 * b, +0.00,
         ]));
-        gl.uniform3f(pr['uShift'].loc, 1 / dWidth, 1 / dHeight, 0.0);
+        gl.uniform3f(pr['uShift'].loc, 0.0, dh, 0.0);
     };
 
     window.pxScreenSize = 32;
-    window.px = 1 / pxScreenSize;
-    utils.watch(window, 'pxScreenSize', function (v) {
-        window.px = 1 / v;
+    window.px = 1 / 32;
+    utils.watch(window, 'pxScreenSize', function () {
+        log('pixel screen size set to %d', pxScreenSize);
         updateProjectionMatrix();
-        initBuffers();
     });
 
     utils.onKeyDown('EQUAL', function () { window.pxScreenSize += 2; });
@@ -110,14 +114,14 @@
     var frame = 1;
     var fRate = 0;
 
-    var numColors = 7;
+    var numColors = 9;
     var colors = new Float32Array(numColors * 3);
 
     var changeColors = function () {
         for (var i = 0; i < numColors * 3; i++) {
             colors[i] = Math.random();
         }
-        colors.seed = Math.floor(Math.random() * 4294967296);
+        colors.seed = ~~(Math.random() * 4294967296);
     };
     utils.onKeyDown('BACKSPACE', changeColors);
 
@@ -156,7 +160,7 @@
 
         requestAnimationFrame(draw);
 
-        var shift = Math.floor(o.sqr / 2);
+        var shift = ~~(o.sqr / 2);
         var colorIndex = 0;
         var rnd = colors.seed;
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -167,8 +171,8 @@
                 gl.uniform3fv(pr['uColor'].loc, colors.subarray(colorIndex, colorIndex + 3));
                 gl.uniform3f(
                     pr['uPos'].loc,
-                    Math.floor(i - shift) * px,
-                    Math.floor(j - shift) * px,
+                    (i - shift) * px,
+                    (j - shift) * px,
                     o.h * px
                 );
                 gl.drawElements(gl.TRIANGLES, cube.indices.length, gl.UNSIGNED_BYTE, 0);
