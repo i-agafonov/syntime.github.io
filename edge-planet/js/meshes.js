@@ -11,7 +11,6 @@ var Cube = function (size) {
     //  |/      |/
     //  v2------v3
 
-    var i;
     this.vertices = [
         -size, -size, +size, +0, +0, +1,
         +size, -size, +size, +0, +0, +1,

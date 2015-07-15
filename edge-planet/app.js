@@ -23,8 +23,6 @@
     frameRate.setAttribute('style', 'position: fixed; bottom: 20px; left: 20px; color: #fff');
     document.body.appendChild(frameRate);
 
-    var cube;
-
     var initShaders = function () {
         return glu.loadProgram('shaders/vshader.glsl', 'shaders/fshader.glsl').then(function (program) {
             window.pr = program;
@@ -32,20 +30,17 @@
         });
     };
 
+    var chunks = new Array(4);
+
     var initBuffers = function () {
-        if (cube) {
-            var vb = cube.vertexBuffer;
-            var ib = cube.indexBuffer;
+
+        for (var i = 0, len = chunks.length; i < len; i++) {
+            var chunk = chunks[i] = new Chunk();
+            chunk.pos[0] = i % 2 - 1;
+            chunk.pos[1] = (i + 1) % 2 - 1;
+            chunk.fill(0, Chunk.size, 0, Chunk.size, 0, ~~(Math.random() * Chunk.size));
+            chunk.update();
         }
-        cube = new Cube(px);
-
-        cube.vertexBuffer = vb || gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, cube.vertexBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube.vertices), gl.STATIC_DRAW);
-
-        cube.indexBuffer = ib || gl.createBuffer();
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cube.indexBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint8Array(cube.indices), gl.STATIC_DRAW);
     };
 
     var resizeView = function () {
@@ -67,7 +62,6 @@
     };
 
     window.pxScreenSize = 32;
-    window.px = 1 / 32;
     utils.watch(window, 'pxScreenSize', function () {
         log('pixel screen size set to %d', pxScreenSize);
         updateProjectionMatrix();
@@ -127,21 +121,6 @@
 
     changeColors();
 
-    var o = {};
-    utils.watch(o, 'sqr', function (v) {
-        o.num = v * v;
-        log(v, o.num);
-    });
-    o.sqr = 11;
-    o.h = 0;
-
-    utils.onKeyDown('LEFT_BRACKET', function () { o.sqr -= 2; });
-    utils.onKeyDown('RIGHT_BRACKET', function () { o.sqr += 2; });
-
-    utils.onKeyDown('PAGE_UP', function () { o.h += 1; });
-    utils.onKeyDown('PAGE_DOWN', function () { o.h -= 1; });
-    utils.onKeyDown('HOME', function () { o.h = 0; });
-
     var draw = function (nt) {
         if (!ot) {
             ot = nt;
@@ -160,23 +139,15 @@
 
         requestAnimationFrame(draw);
 
-        var shift = ~~(o.sqr / 2);
         var colorIndex = 0;
         var rnd = colors.seed;
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        for (var i = 0; i < o.sqr; i++) {
-            for (var j = 0; j < o.sqr; j++) {
-                rnd = (rnd * 1103515245 + 12345) % 4294967296;
-                colorIndex = rnd % numColors;
-                gl.uniform3fv(pr['uColor'].loc, colors.subarray(colorIndex, colorIndex + 3));
-                gl.uniform3f(
-                    pr['uPos'].loc,
-                    (i - shift) * px,
-                    (j - shift) * px,
-                    o.h * px
-                );
-                gl.drawElements(gl.TRIANGLES, cube.indices.length, gl.UNSIGNED_BYTE, 0);
-            }
+        for (var i = 0, len = chunks.length; i < len; i++) {
+            rnd = (rnd * 1103515245 + 12345) % 4294967296;
+            colorIndex = Math.abs(rnd) % numColors;
+            gl.uniform3fv(pr['uColor'].loc, colors.subarray(colorIndex));
+
+            chunks[i].draw();
         }
         ot = nt;
     };
