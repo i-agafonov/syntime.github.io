@@ -73,8 +73,8 @@
         updateProjectionMatrix();
     });
 
-    utils.onKeyDown('EQUAL', function () { window.pxScreenSize += 2; });
-    utils.onKeyDown('MINUS', function () { window.pxScreenSize -= 2; });
+    utils.onKeyDown('EQUAL', function () { window.pxScreenSize <<= 1; });
+    utils.onKeyDown('MINUS', function () { window.pxScreenSize > 1 ? window.pxScreenSize >>= 1 : window.pxScreenSize = 1; });
 
     initShaders().then(function () {
         initBuffers();
