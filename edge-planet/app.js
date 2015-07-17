@@ -1,6 +1,54 @@
 (function () {
     'use strict';
 
+    utils.onKeyDown('F2', function () {
+        var count = 5000000;
+        var s = 16;
+        var s1 = s - 1;
+        var z, x, i, j;
+
+        for (var i = 0; i < count; i++) {
+            z += i;
+        }
+
+        z = 0;
+        var t1s = window.performance.now();
+        for (i = 0; i < count; i++) {
+            x = 0;
+            for (j = 0; j !== s1; j++) {
+                if (j !== 0 && j !== s1) {
+                    x += j;
+                } else if (j === 0) {
+                    x += j + s;
+                } else {
+                    x += j - s;
+                }
+            }
+            z += x;
+        }
+        var t1f = window.performance.now();
+
+        z = 0;
+        var t2s = window.performance.now();
+        for (i = 0; i < count; i++) {
+            x = 0;
+            for (j = 0; j !== s1; j++) {
+                if (i === 0) {
+                    x += j + s;
+                } else if (i === s1) {
+                    x += j - s;
+                } else {
+                    x += j;
+                }
+            }
+            z += x;
+        }
+        var t2f = window.performance.now();
+
+        log('1: ' + ((t1f - t1s)).toFixed(4));
+        log('2: ' + ((t2f - t2s)).toFixed(4));
+    });
+
     var canvas = document.createElement('canvas');
     document.body.appendChild(canvas);
     window.gl = canvas.getContext('webgl', {antialias: false});
@@ -33,13 +81,17 @@
     var chunks = new Array(4);
 
     var initBuffers = function () {
-
         for (var i = 0, len = chunks.length; i < len; i++) {
             var chunk = chunks[i] = new Chunk();
             chunk.pos[0] = i % 2 - 1;
             chunk.pos[1] = (i + 1) % 2 - 1;
             chunk.fill(0, Chunk.size, 0, Chunk.size, 0, ~~(Math.random() * Chunk.size));
-            chunk.update();
+
+            //gl.enableVertexAttribArray(pr['aVertexPos'].loc);
+            //gl.vertexAttribPointer(pr['aVertexPos'].loc, 3, gl.FLOAT, false, 24, 0);
+            //gl.enableVertexAttribArray(pr['aVertexNormal'].loc);
+            //gl.vertexAttribPointer(pr['aVertexNormal'].loc, 3, gl.FLOAT, false, 24, 12);
+            //chunk.update();
         }
     };
 
@@ -88,12 +140,7 @@
         gl.depthFunc(gl.LEQUAL);
 
         gl.enable(gl.CULL_FACE);
-        gl.cullFace(gl.FRONT);
-
-        gl.enableVertexAttribArray(pr['aVertexPos'].loc);
-        gl.vertexAttribPointer(pr['aVertexPos'].loc, 3, gl.FLOAT, false, 24, 0);
-        gl.enableVertexAttribArray(pr['aVertexNormal'].loc);
-        gl.vertexAttribPointer(pr['aVertexNormal'].loc, 3, gl.FLOAT, false, 24, 12);
+        gl.cullFace(gl.BACK);
 
         var angle = Math.PI - 0.1;
         gl.uniform3f(
@@ -145,9 +192,8 @@
         for (var i = 0, len = chunks.length; i < len; i++) {
             rnd = (rnd * 1103515245 + 12345) % 4294967296;
             colorIndex = Math.abs(rnd) % numColors;
-            gl.uniform3fv(pr['uColor'].loc, colors.subarray(colorIndex));
-
-            chunks[i].draw();
+            //gl.uniform3fv(pr['uColor'].loc, colors.subarray(colorIndex));
+            //chunks[i].draw();
         }
         ot = nt;
     };
