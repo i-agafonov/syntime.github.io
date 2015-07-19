@@ -39,6 +39,7 @@
         var vp = 0, ip = 0, iv = 0; // vertex pointer, index pointer, index vertex
         var vvv = 0; // current voxel
         var x1, y1, z1;
+        var cz = this.pos[2] + 8;
         for (z = 0, i = 0; z !== s; z++) {
             z1 = z + 1;
             for (y = 0; y !== s; y++) {
@@ -117,20 +118,20 @@
                             nor[vp + 11] = 0;
 
                             // color 0
-                            col[vp] = z/s;
-                            col[vp + 1] = 1-z/s;
+                            col[vp] = (z+cz*s)/ss;
+                            col[vp + 1] = 1-(z+cz*s)/ss;
                             col[vp + 2] = 0.5;
                             // color 1
-                            col[vp + 3] = z/s;
-                            col[vp + 4] = 1-z/s;
+                            col[vp + 3] = (z+cz*s)/ss;
+                            col[vp + 4] = 1-(z+cz*s)/ss;
                             col[vp + 5] = 0.5;
                             // color 2
-                            col[vp + 6] = z/s;
-                            col[vp + 7] = 1-z/s;
+                            col[vp + 6] = (z+cz*s)/ss;
+                            col[vp + 7] = 1-(z+cz*s)/ss;
                             col[vp + 8] = 0.5;
                             // color 3
-                            col[vp + 9] = z/s;
-                            col[vp + 10] = 1-z/s;
+                            col[vp + 9] = (z+cz*s)/ss;
+                            col[vp + 10] = 1-(z+cz*s)/ss;
                             col[vp + 11] = 0.5;
                             vp += 12;
 
@@ -181,20 +182,20 @@
                             nor[vp + 11] = 0;
 
                             // color 0
-                            col[vp] = z/s;
-                            col[vp + 1] = 1-z/s;
+                            col[vp] = (z+cz*s)/ss;
+                            col[vp + 1] = 1-(z+cz*s)/ss;
                             col[vp + 2] = 0.5;
                             // color 1
-                            col[vp + 3] = z/s;
-                            col[vp + 4] = 1-z/s;
+                            col[vp + 3] = (z+cz*s)/ss;
+                            col[vp + 4] = 1-(z+cz*s)/ss;
                             col[vp + 5] = 0.5;
                             // color 2
-                            col[vp + 6] = z/s;
-                            col[vp + 7] = 1-z/s;
+                            col[vp + 6] = (z+cz*s)/ss;
+                            col[vp + 7] = 1-(z+cz*s)/ss;
                             col[vp + 8] = 0.5;
                             // color 3
-                            col[vp + 9] = z/s;
-                            col[vp + 10] = 1-z/s;
+                            col[vp + 9] = (z+cz*s)/ss;
+                            col[vp + 10] = 1-(z+cz*s)/ss;
                             col[vp + 11] = 0.5;
                             vp += 12;
 
@@ -245,20 +246,20 @@
                             nor[vp + 11] = 0;
 
                             // color 0
-                            col[vp] = z/s;
-                            col[vp + 1] = 1-z/s;
+                            col[vp] = (z+cz*s)/ss;
+                            col[vp + 1] = 1-(z+cz*s)/ss;
                             col[vp + 2] = 0.5;
                             // color 1
-                            col[vp + 3] = z/s;
-                            col[vp + 4] = 1-z/s;
+                            col[vp + 3] = (z+cz*s)/ss;
+                            col[vp + 4] = 1-(z+cz*s)/ss;
                             col[vp + 5] = 0.5;
                             // color 2
-                            col[vp + 6] = z/s;
-                            col[vp + 7] = 1-z/s;
+                            col[vp + 6] = (z+cz*s)/ss;
+                            col[vp + 7] = 1-(z+cz*s)/ss;
                             col[vp + 8] = 0.5;
                             // color 3
-                            col[vp + 9] = z/s;
-                            col[vp + 10] = 1-z/s;
+                            col[vp + 9] = (z+cz*s)/ss;
+                            col[vp + 10] = 1-(z+cz*s)/ss;
                             col[vp + 11] = 0.5;
                             vp += 12;
 
@@ -309,20 +310,20 @@
                             nor[vp + 11] = 0;
 
                             // color 0
-                            col[vp] = z/s;
-                            col[vp + 1] = 1-z/s;
+                            col[vp] = (z+cz*s)/ss;
+                            col[vp + 1] = 1-(z+cz*s)/ss;
                             col[vp + 2] = 0.5;
                             // color 1
-                            col[vp + 3] = z/s;
-                            col[vp + 4] = 1-z/s;
+                            col[vp + 3] = (z+cz*s)/ss;
+                            col[vp + 4] = 1-(z+cz*s)/ss;
                             col[vp + 5] = 0.5;
                             // color 2
-                            col[vp + 6] = z/s;
-                            col[vp + 7] = 1-z/s;
+                            col[vp + 6] = (z+cz*s)/ss;
+                            col[vp + 7] = 1-(z+cz*s)/ss;
                             col[vp + 8] = 0.5;
                             // color 3
-                            col[vp + 9] = z/s;
-                            col[vp + 10] = 1-z/s;
+                            col[vp + 9] = (z+cz*s)/ss;
+                            col[vp + 10] = 1-(z+cz*s)/ss;
                             col[vp + 11] = 0.5;
                             vp += 12;
 
@@ -373,20 +374,20 @@
                             nor[vp + 11] = -1;
 
                             // color 0
-                            col[vp] = z/s;
-                            col[vp + 1] = 1-z/s;
+                            col[vp] = (z+cz*s)/ss;
+                            col[vp + 1] = 1-(z+cz*s)/ss;
                             col[vp + 2] = 0.5;
                             // color 1
-                            col[vp + 3] = z/s;
-                            col[vp + 4] = 1-z/s;
+                            col[vp + 3] = (z+cz*s)/ss;
+                            col[vp + 4] = 1-(z+cz*s)/ss;
                             col[vp + 5] = 0.5;
                             // color 2
-                            col[vp + 6] = z/s;
-                            col[vp + 7] = 1-z/s;
+                            col[vp + 6] = (z+cz*s)/ss;
+                            col[vp + 7] = 1-(z+cz*s)/ss;
                             col[vp + 8] = 0.5;
                             // color 3
-                            col[vp + 9] = z/s;
-                            col[vp + 10] = 1-z/s;
+                            col[vp + 9] = (z+cz*s)/ss;
+                            col[vp + 10] = 1-(z+cz*s)/ss;
                             col[vp + 11] = 0.5;
                             vp += 12;
 
@@ -437,20 +438,20 @@
                             nor[vp + 11] = 1;
 
                             // color 0
-                            col[vp] = z/s;
-                            col[vp + 1] = 1-z/s;
+                            col[vp] = (z+cz*s)/ss;
+                            col[vp + 1] = 1-(z+cz*s)/ss;
                             col[vp + 2] = 0.5;
                             // color 1
-                            col[vp + 3] = z/s;
-                            col[vp + 4] = 1-z/s;
+                            col[vp + 3] = (z+cz*s)/ss;
+                            col[vp + 4] = 1-(z+cz*s)/ss;
                             col[vp + 5] = 0.5;
                             // color 2
-                            col[vp + 6] = z/s;
-                            col[vp + 7] = 1-z/s;
+                            col[vp + 6] = (z+cz*s)/ss;
+                            col[vp + 7] = 1-(z+cz*s)/ss;
                             col[vp + 8] = 0.5;
                             // color 3
-                            col[vp + 9] = z/s;
-                            col[vp + 10] = 1-z/s;
+                            col[vp + 9] = (z+cz*s)/ss;
+                            col[vp + 10] = 1-(z+cz*s)/ss;
                             col[vp + 11] = 0.5;
                             vp += 12;
 
@@ -503,19 +504,17 @@
 
         gl.drawElements(gl.TRIANGLES, this.numIndices, gl.UNSIGNED_SHORT, 0);
         //gl.disable(gl.DEPTH_TEST);
-        gl.drawElements(gl.LINES, this.numIndices, gl.UNSIGNED_SHORT, 0);
+        //gl.drawElements(gl.LINES, this.numIndices, gl.UNSIGNED_SHORT, 0);
         //gl.enable(gl.DEPTH_TEST);
     };
 
     Chunk.prototype.fill = function (xmin, xmax, ymin, ymax, zmin, zmax) {
-        var i = 0;
+        var s = Chunk.size;
+        var ss = s * s;
         for (var z = zmin; z < zmax; z++) {
             for (var y = ymin; y < ymax; y++) {
-                for (var x = xmin; x < xmax; x++, i++) {
-                    var zm = zmin + Math.ceil((zmax - zmin) * Math.random() * 0.07);
-                    if (z < zm) {
-                        this.voxels[i] = 1;
-                    }
+                for (var x = xmin; x < xmax; x++) {
+                    this.voxels[z * ss + y * s + x] = 1;
                 }
             }
         }

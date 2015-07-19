@@ -205,14 +205,16 @@
         updateProjectionMatrix();
     });
 
-    utils.onKeyDown('EQUAL', function () { window.pxScreenSize <<= 1; });
-    utils.onKeyDown('MINUS', function () { window.pxScreenSize > 1 ? window.pxScreenSize >>= 1 : window.pxScreenSize = 1; });
+    utils.onKeyDown('EQUAL', function () { window.pxScreenSize -= 0.125; });
+    utils.onKeyDown('MINUS', function () { window.pxScreenSize > 1 ? window.pxScreenSize += 0.125 : window.pxScreenSize = 1; });
 
     function loadData() {
         var clouds = new Image();
         return new Promise(function (resolve) {
             clouds.onload = function () {
                 var canvas = document.createElement('canvas');
+                canvas.width = clouds.width;
+                canvas.height = clouds.height;
                 var context = canvas.getContext('2d');
                 context.drawImage(clouds, 0, 0);
                 window.clouds = context.getImageData(0, 0, clouds.width, clouds.height);
