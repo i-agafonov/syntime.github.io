@@ -268,6 +268,7 @@ var onKeyEvent = function (e) {
     var keydown = e.type === 'keydown', fns;
     utils.keyPressed[e.keyCode] = keydown;
     if (keydown && (fns = utils.keyListeners[e.keyCode])) {
+        e.preventDefault();
         for (var i = 0; i < fns.length; i++) {
             fns[i]();
         }

@@ -2,48 +2,146 @@
     'use strict';
 
     utils.onKeyDown('F2', function () {
-        var count = 5000000;
+        var count = 10000;
         var s = 16;
         var s1 = s - 1;
-        var z, x, i, j;
+        var x, y, z, i, iter;
+        var vp, ip, iv;
+        var ver, ind;
 
-        for (var i = 0; i < count; i++) {
-            z += i;
-        }
-
-        z = 0;
+        //==============================================================================================================
         var t1s = window.performance.now();
-        for (i = 0; i < count; i++) {
-            x = 0;
-            for (j = 0; j !== s1; j++) {
-                if (j !== 0 && j !== s1) {
-                    x += j;
-                } else if (j === 0) {
-                    x += j + s;
-                } else {
-                    x += j - s;
+        ver = new Float32Array(Chunk.size3 * 6 /*sides per cube*/ * 4 /*vertices per side*/ * 6 /*vertex xyz + normal xyz*/);
+        ind = new Uint16Array(Chunk.size3 * 6 /*sides per cube*/ * 6 /*indices per side*/);
+        vp = 0;
+        ip = 0;
+        iv = 0;
+        for (iter = 0; iter < count; iter++) {
+            for (z = 0, i = 0; z !== s; z++) {
+                for (y = 0; y !== s; y++) {
+                    for (x = 0; x !== s; x++, i++) {
+                        // vertex 0
+                        ver[vp] = x * px;
+                        ver[vp + 1] = (y + 1) * px;
+                        ver[vp + 2] = z * px;
+
+                        // normal 0
+                        ver[vp + 3] = -1;
+                        ver[vp + 4] = 0;
+                        ver[vp + 5] = 0;
+
+                        // vertex 1
+                        ver[vp + 6] = x * px;
+                        ver[vp + 7] = y * px;
+                        ver[vp + 8] = z * px;
+
+                        // normal 1
+                        ver[vp + 9] = -1;
+                        ver[vp + 10] = 0;
+                        ver[vp + 11] = 0;
+
+                        // vertex 2
+                        ver[vp + 12] = x * px;
+                        ver[vp + 13] = (y + 1) * px;
+                        ver[vp + 14] = (z + 1) * px;
+
+                        // normal 2
+                        ver[vp + 15] = -1;
+                        ver[vp + 16] = 0;
+                        ver[vp + 17] = 0;
+
+                        // vertex 3
+                        ver[vp + 18] = x * px;
+                        ver[vp + 19] = y * px;
+                        ver[vp + 20] = (z + 1) * px;
+
+                        // normal 3
+                        ver[vp + 21] = -1;
+                        ver[vp + 22] = 0;
+                        ver[vp + 23] = 0;
+                        vp += 24;
+
+                        // indices
+                        ind[ip] = iv; // 0
+                        ind[ip + 1] = iv + 1; // 1
+                        ind[ip + 2] = iv + 2;   // 2
+                        ind[ip + 3] = iv + 2; // 2
+                        ind[ip + 4] = iv + 1;   // 1
+                        ind[ip + 5] = iv + 3; // 3
+                        iv += 4;
+                        ip += 6;
+                    }
                 }
             }
-            z += x;
         }
         var t1f = window.performance.now();
+        //==============================================================================================================
 
-        z = 0;
+        //==============================================================================================================
         var t2s = window.performance.now();
-        for (i = 0; i < count; i++) {
-            x = 0;
-            for (j = 0; j !== s1; j++) {
-                if (i === 0) {
-                    x += j + s;
-                } else if (i === s1) {
-                    x += j - s;
-                } else {
-                    x += j;
+        ver = new Float32Array(Chunk.size3 * 6 /*sides per cube*/ * 4 /*vertices per side*/ * 6 /*vertex xyz + normal xyz*/);
+        ind = new Uint16Array(Chunk.size3 * 6 /*sides per cube*/ * 6 /*indices per side*/);
+        vp = 0;
+        ip = 0;
+        iv = 0;
+        for (iter = 0; iter < count; iter++) {
+            for (z = 0, i = 0; z !== s; z++) {
+                for (y = 0; y !== s; y++) {
+                    for (x = 0; x !== s; x++, i++) {
+                        // vertex 0
+                        ver[vp++] = x * px;
+                        ver[vp++] = (y + 1) * px;
+                        ver[vp++] = z * px;
+
+                        // normal 0
+                        ver[vp++] = -1;
+                        ver[vp++] = 0;
+                        ver[vp++] = 0;
+
+                        // vertex 1
+                        ver[vp++] = x * px;
+                        ver[vp++] = y * px;
+                        ver[vp++] = z * px;
+
+                        // normal 1
+                        ver[vp++] = -1;
+                        ver[vp++] = 0;
+                        ver[vp++] = 0;
+
+                        // vertex 2
+                        ver[vp++] = x * px;
+                        ver[vp++] = (y + 1) * px;
+                        ver[vp++] = (z + 1) * px;
+
+                        // normal 2
+                        ver[vp++] = -1;
+                        ver[vp++] = 0;
+                        ver[vp++] = 0;
+
+                        // vertex 3
+                        ver[vp++] = x * px;
+                        ver[vp++] = y * px;
+                        ver[vp++] = (z + 1) * px;
+
+                        // normal 3
+                        ver[vp++] = -1;
+                        ver[vp++] = 0;
+                        ver[vp++] = 0;
+
+                        // indices
+                        ind[ip++] = iv++; // 0
+                        ind[ip++] = iv++; // 1
+                        ind[ip++] = iv;   // 2
+                        ind[ip++] = iv--; // 2
+                        ind[ip++] = iv;   // 1
+                        iv += 2;
+                        ind[ip++] = iv++; // 3
+                    }
                 }
             }
-            z += x;
         }
         var t2f = window.performance.now();
+        //==============================================================================================================
 
         log('1: ' + ((t1f - t1s)).toFixed(4));
         log('2: ' + ((t2f - t2s)).toFixed(4));
@@ -62,7 +160,7 @@
         dHeight += dHeight & 1;
         canvas.width = dWidth;
         canvas.height = dHeight;
-        log('canvas size changed: %d x %d', dWidth, dHeight);
+        //log('canvas size changed: %d x %d', dWidth, dHeight);
     };
 
     resizeCanvas();
@@ -78,21 +176,9 @@
         });
     };
 
-    var chunks = new Array(4);
-
+    window.chunkManager = new ChunkManager();
     var initBuffers = function () {
-        for (var i = 0, len = chunks.length; i < len; i++) {
-            var chunk = chunks[i] = new Chunk();
-            chunk.pos[0] = i % 2 - 1;
-            chunk.pos[1] = (i + 1) % 2 - 1;
-            chunk.fill(0, Chunk.size, 0, Chunk.size, 0, ~~(Math.random() * Chunk.size));
-
-            //gl.enableVertexAttribArray(pr['aVertexPos'].loc);
-            //gl.vertexAttribPointer(pr['aVertexPos'].loc, 3, gl.FLOAT, false, 24, 0);
-            //gl.enableVertexAttribArray(pr['aVertexNormal'].loc);
-            //gl.vertexAttribPointer(pr['aVertexNormal'].loc, 3, gl.FLOAT, false, 24, 12);
-            //chunk.update();
-        }
+        chunkManager.initChunks();
     };
 
     var resizeView = function () {
@@ -122,15 +208,32 @@
     utils.onKeyDown('EQUAL', function () { window.pxScreenSize <<= 1; });
     utils.onKeyDown('MINUS', function () { window.pxScreenSize > 1 ? window.pxScreenSize >>= 1 : window.pxScreenSize = 1; });
 
-    initShaders().then(function () {
-        initBuffers();
-        init();
-        resizeView();
-        addEventListener('resize', function () {
-            resizeCanvas();
-            resizeView();
+    function loadData() {
+        var clouds = new Image();
+        return new Promise(function (resolve) {
+            clouds.onload = function () {
+                var canvas = document.createElement('canvas');
+                var context = canvas.getContext('2d');
+                context.drawImage(clouds, 0, 0);
+                window.clouds = context.getImageData(0, 0, clouds.width, clouds.height);
+                canvas.remove();
+                resolve();
+            };
+            clouds.src = 'img/clouds.png';
         });
-        requestAnimationFrame(draw);
+    }
+
+    loadData().then(function () {
+        initShaders().then(function () {
+            initBuffers();
+            init();
+            resizeView();
+            addEventListener('resize', function () {
+                resizeCanvas();
+                resizeView();
+            });
+            requestAnimationFrame(draw);
+        });
     }, err);
 
     var invSqrt2 = 1 / Math.sqrt(2);
@@ -140,7 +243,7 @@
         gl.depthFunc(gl.LEQUAL);
 
         gl.enable(gl.CULL_FACE);
-        gl.cullFace(gl.BACK);
+        gl.cullFace(gl.FRONT);
 
         var angle = Math.PI - 0.1;
         gl.uniform3f(
@@ -154,19 +257,6 @@
     var ot, dt;
     var frame = 1;
     var fRate = 0;
-
-    var numColors = 9;
-    var colors = new Float32Array(numColors * 3);
-
-    var changeColors = function () {
-        for (var i = 0; i < numColors * 3; i++) {
-            colors[i] = Math.random();
-        }
-        colors.seed = ~~(Math.random() * 4294967296);
-    };
-    utils.onKeyDown('BACKSPACE', changeColors);
-
-    changeColors();
 
     var draw = function (nt) {
         if (!ot) {
@@ -186,15 +276,8 @@
 
         requestAnimationFrame(draw);
 
-        var colorIndex = 0;
-        var rnd = colors.seed;
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        for (var i = 0, len = chunks.length; i < len; i++) {
-            rnd = (rnd * 1103515245 + 12345) % 4294967296;
-            colorIndex = Math.abs(rnd) % numColors;
-            //gl.uniform3fv(pr['uColor'].loc, colors.subarray(colorIndex));
-            //chunks[i].draw();
-        }
+        chunkManager.draw();
         ot = nt;
     };
 
