@@ -8,6 +8,7 @@
         body, html {
             width: 100%;
             height: 100%;
+            background: #000;
             margin: 0;
             overflow: hidden;
             font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
@@ -15,9 +16,6 @@
     </style>
 </head>
 <body>
-<div style="position: fixed; width: 100%; height: 100%; color: #888; background: #000">
-    <div style="position: absolute; top: 50%; width: 100%; text-align: center; font-size: 180px; margin-top: -0.625em">Click me!</div>
-</div>
 <script>
     "use strict";
 
@@ -144,35 +142,42 @@
 
     Node.prototype.draw = function draw(node1, node2) {
         if (node1) {
-            ctx.beginPath();
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = cellSize;
-            ctx.moveTo(cellSize * node1.x + 1.5 * lineWidth, cellSize * node1.y + 1.5 * lineWidth);
-            ctx.lineTo(cellSize * node2.x + 1.5 * lineWidth, cellSize * node2.y + 1.5 * lineWidth);
-            ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.strokeStyle = '#000';
+            this.ctx.lineWidth = cellSize;
+            this.ctx.moveTo(cellSize * node1.x + 1.5 * lineWidth, cellSize * node1.y + 1.5 * lineWidth);
+            this.ctx.lineTo(cellSize * node2.x + 1.5 * lineWidth, cellSize * node2.y + 1.5 * lineWidth);
+            this.ctx.stroke();
 
-            ctx.beginPath();
-            ctx.strokeStyle = this.color;
-            ctx.lineWidth = lineWidth;
-            ctx.moveTo(cellSize * node1.x + 1.5 * lineWidth, cellSize * node1.y + 1.5 * lineWidth);
-            ctx.lineTo(cellSize * node2.x + 1.5 * lineWidth, cellSize * node2.y + 1.5 * lineWidth);
-            ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.strokeStyle = this.color;
+            this.ctx.lineWidth = lineWidth;
+            this.ctx.moveTo(cellSize * node1.x + 1.5 * lineWidth, cellSize * node1.y + 1.5 * lineWidth);
+            this.ctx.lineTo(cellSize * node2.x + 1.5 * lineWidth, cellSize * node2.y + 1.5 * lineWidth);
+            this.ctx.stroke();
         } else {
-            ctx.beginPath();
-            ctx.strokeStyle = this.color;
-            ctx.fillRect(node2.x * cellSize + 1.5 * lineWidth, node2.y * cellSize + 1.5 * lineWidth, cellSize, cellSize);
-            ctx.arc(node2.x * cellSize + 1.5 * lineWidth, node2.y * cellSize + 1.5 * lineWidth, lineWidth, 0, 2 * Math.PI);
-            ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.strokeStyle = this.color;
+            this.ctx.fillRect(node2.x * cellSize + 1.5 * lineWidth, node2.y * cellSize + 1.5 * lineWidth, cellSize, cellSize);
+            this.ctx.arc(node2.x * cellSize + 1.5 * lineWidth, node2.y * cellSize + 1.5 * lineWidth, lineWidth, 0, 2 * Math.PI);
+            this.ctx.stroke();
         }
     };
 
+    Node.prototype.ctx = ctx;
     Node.prototype.maze = new Maze(mazeWidth, mazeHeight);
 
-    var Tree = function (x, y) {
-        this.forkThreshold = Math.random() * 0.5;
-        this.forkThreshold *= this.forkThreshold;
-        this.rotateThreshold = Math.random() * ((1 - this.forkThreshold) * 0.1);
-        this.growThreshold = Math.random() * (1 - this.rotateThreshold);
+    var Tree = function (x, y, conf) {
+        if (conf == null) {
+            this.forkThreshold = Math.random() * 0.5;
+            this.forkThreshold *= this.forkThreshold;
+            this.rotateThreshold = Math.random() * ((1 - this.forkThreshold) * 0.1);
+            this.growThreshold = Math.random() * (1 - this.rotateThreshold);
+        } else {
+            this.forkThreshold = conf.forkThreshold;
+            this.rotateThreshold = conf.rotateThreshold;
+            this.growThreshold = conf.growThreshold;
+        }
 
         this.ends = [];
 
@@ -216,18 +221,164 @@
         }
 
         this.ends = newEnds;
+        return this.ends.length;
     };
 
+    var points;
+
+    var getPoints = function () {
+        var sText = 'Click around me!';
+        var sTextHeight = Math.floor(displayWidth / 12);
+        ctx.font = 'bold ' + sTextHeight + 'px Arial Black';
+        ctx.fillStyle = '#ffffff';
+        var sTextWidth = Math.floor(ctx.measureText(sText).width);
+
+        var sLeft = Math.floor((displayWidth / 2) - (sTextWidth / 2));
+        var sTop = Math.floor((displayHeight / 2) - (sTextHeight / 2));
+        var sBottom = sTop + sTextHeight;
+
+        ctx.fillText(sText, sLeft, sBottom - 8);
+
+        var mLeft = Math.floor(sLeft / cellSize);
+        var mTop = Math.floor(sTop / cellSize);
+        var sTextImageData = ctx.getImageData(sLeft, sTop, sTextWidth, sTextHeight);
+
+        var data = sTextImageData.data;
+        var width = Math.floor(sTextWidth / cellSize);
+        var height = Math.floor(sTextHeight / cellSize);
+
+        var val, old, x, y, X, Y, x1, y1;
+
+        old = 0;
+        for (y = 0; y < height; y++) {
+            for (x = 0; x < width; x++) {
+                X = x * cellSize;
+                Y = y * cellSize;
+                val = data[(X + Y * sTextWidth) * 4];
+                if (val !== old) {
+                    Node.prototype.maze.set(mLeft + x, mTop + y);
+                }
+                old = val;
+            }
+        }
+
+        old = 0;
+        for (x = 0; x < width; x++) {
+            for (y = 0; y < height; y++) {
+                X = x * cellSize;
+                Y = y * cellSize;
+                val = data[(X + Y * sTextWidth) * 4];
+                if (val !== old) {
+                    Node.prototype.maze.set(mLeft + x, mTop + y);
+                }
+                old = val;
+            }
+        }
+
+        points = [];
+
+        y = Math.round(height / 2);
+        Y = y * cellSize;
+        x1 = 0;
+        old = 0;
+        for (x = 0; x < width; x++) {
+            X = x * cellSize;
+            val = data[(X + Y * sTextWidth) * 4];
+            if (val > old) {
+                x1 = x;
+            } else if (val < old) {
+                points.push({x: Math.round(x1 + (x - x1) / 2) + mLeft, y: y + mTop});
+            }
+            old = val;
+        }
+
+        x = points[points.length - 1].x;
+        X = x * cellSize;
+        y1 = 0;
+        old = 0;
+        for (y = height; y > 0; y--) {
+            Y = y * cellSize;
+            val = data[(X + Y * sTextWidth) * 4];
+            if (val > old) {
+                y1 = y;
+            } else if (val < old) {
+                points.push({x: x, y: Math.round(y1 + (y - y1) / 2 + mTop)});
+                break;
+            }
+            old = val;
+        }
+    };
+
+    var run = false;
     document.addEventListener('click', function (e) {
+        run = true;
         var x = Math.floor(e.clientX / cellSize);
         var y = Math.floor(e.clientY / cellSize);
         var tree = new Tree(x, y);
         var draw = function () {
-            tree.iterate();
-            requestAnimationFrame(draw);
+            if (run) {
+                if (tree.iterate()) {
+                    requestAnimationFrame(draw);
+                }
+            }
         };
         requestAnimationFrame(draw);
     });
+
+    var drawGreating = function () {
+        getPoints();
+        ctx.clearRect(0, 0, displayWidth, displayHeight);
+        points.forEach(function (p) {
+            var tree = new Tree(p.x, p.y, {forkThreshold: 0.3, rotateThreshold: 0.4, growThreshold: 0.1});
+            var draw = function () {
+                if (tree.iterate()) {
+                    requestAnimationFrame(draw);
+                }
+            };
+            requestAnimationFrame(draw);
+        });
+    };
+
+    var reset = function () {
+        Node.prototype.maze = new Maze(mazeWidth, mazeHeight);
+        ctx.clearRect(0, 0, displayWidth, displayHeight);
+        drawGreating();
+    };
+
+    document.addEventListener('keydown', function (e) {
+        run = false;
+        if (e.keyCode === 27) { // ESC
+            reset();
+        }
+    });
+
+    (function () {
+        var x1 = 0;
+        var y1 = 0;
+        var x2 = 0;
+        var y2 = 0;
+
+        canvas.addEventListener('touchstart', function(e) {
+            x1 = e.touches[0].clientX;
+            y1 = e.touches[0].clientY;
+        }, false);
+
+        canvas.addEventListener('touchend', function(e) {
+            x2 = e.changedTouches[0].clientX;
+            y2 = e.changedTouches[0].clientY;
+            handleGesure();
+        }, false);
+
+        function handleGesure() {
+            var dy = y2 - y1;
+            var dx = x2 - x1;
+            if (dy * dy + dx * dx >= 200) {
+                reset();
+            }
+        }
+    })();
+
+    drawGreating();
 
     (function () {
         var lastTime = 0;
@@ -238,20 +389,18 @@
                     || window[vendors[x] + 'CancelRequestAnimationFrame'];
         }
 
-        if (!window.requestAnimationFrame)
-            window.requestAnimationFrame = function (callback, element) {
-                var currTime = new Date().getTime();
-                var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-                var id = window.setTimeout(function () { callback(currTime + timeToCall); },
-                        timeToCall);
-                lastTime = currTime + timeToCall;
-                return id;
-            };
+        if (!window.requestAnimationFrame) window.requestAnimationFrame = function (callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function () { callback(currTime + timeToCall); },
+                    timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
 
-        if (!window.cancelAnimationFrame)
-            window.cancelAnimationFrame = function (id) {
-                clearTimeout(id);
-            };
+        if (!window.cancelAnimationFrame) window.cancelAnimationFrame = function (id) {
+            clearTimeout(id);
+        };
     }());
 
 </script>
